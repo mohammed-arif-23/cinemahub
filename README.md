@@ -59,25 +59,6 @@ graph TD
 
 ---
 
-## 🗂️ Main Files & Structure
-
-| File/Folder                                                                                                          | Role & Description                             |
-| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| [`lib/movieData.js`](lib/movieData.js)                                                                               | Movie data fetcher functions (mock/local data) |
-| [`lib/movies.json`](lib/movies.json)                                                                                 | Mocked movie data                              |
-| [`components/SeatSelection.jsx`](components/SeatSelection.jsx)                                                       | Animated seat selection UI                     |
-| [`components/Header.jsx`](components/Header.jsx)                                                                     | Navigation bar with login/logout controls      |
-| [`components/HeroSection.jsx`](components/HeroSection.jsx)                                                           | Animated homepage hero panel                   |
-| [`components/MovieCard.jsx`](components/MovieCard.jsx)                                                               | Card display for each movie                    |
-| [`app/page.js`](app/page.js)                                                                                         | Main app entrypoint, movie listing             |
-| [`app/booking/[movieId]/[theaterId]/[showtimeId]/page.jsx`](app/booking/[movieId]/[theaterId]/[showtimeId]/page.jsx) | Booking UI per showtime                        |
-| [`app/booking/confirmation/page.jsx`](app/booking/confirmation/page.jsx)                                             | Booking confirmation and summary screen        |
-| [`lib/firebaseConfig.js`](lib/firebaseConfig.js)                                                                     | Firebase integration and setup                 |
-| [`lib/emailService.js`](lib/emailService.js)                                                                         | Email confirmation sender (Nodemailer)         |
-| [`app/api/send-email/route.js`](app/api/send-email/route.js)                                                         | API route for sending emails                   |
-
----
-
 ## 🖼️ SVG & Stylish Effects
 
 - **Custom SVG Banners:** For a unique, branded look!
@@ -163,7 +144,6 @@ EMAIL_PASS=your_email_password
 
 - Add payment gateway integration
 - User reviews and movie ratings
-- Live movie API (TMDB)
 - Admin dashboard
 
 ---
@@ -187,9 +167,7 @@ Copyright © 2025
   <a href="mailto:mohammedarif.dev@gmail.com">
     <img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
   </a>
-  <a href="https://twitter.com/mohammedarif_23" target="_blank">
-    <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter">
-  </a>
+ 
 </p>
 
 <p align="center">

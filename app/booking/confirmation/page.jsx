@@ -185,18 +185,18 @@ function BookingConfirmationContent() {
               <div className="space-y-2 md:space-y-3">
                 <div className="flex justify-between text-sm md:text-base">
                   <span className="text-gray-300">Tickets ({seats.length}):</span>
-                  <span className="text-white">₹{Math.round(ticketPrice || 0)}</span>
+                  <span className="text-white">₹{ticketPrice}</span>
                 </div>
                 <div className="flex justify-between text-sm md:text-base">
                   <span className="text-gray-300">Booking Fee:</span>
-                  <span className="text-white">₹{Math.round(bookingFee || 50)}</span>
+                  <span className="text-white">₹{(bookingFee || 50)}</span>
                 </div>
                 <div className="flex justify-between text-sm md:text-base">
                   <span className="text-gray-300">Tax (2.4%):</span>
-                  <span className="text-white">₹{Math.round(tax || 0)}</span>
+                  <span className="text-white">₹{(tax || 0)}</span>
                 </div>
                 <div className="flex justify-between font-bold pt-3 border-t border-gray-700 text-base md:text-lg">
-                  <span className="text-white">Total:</span>
+                  <span className="text-white">Total (Rounded off):</span>
                   <span className="text-white">₹{Math.round(totalPrice || 0)}</span>
                 </div>
               </div>

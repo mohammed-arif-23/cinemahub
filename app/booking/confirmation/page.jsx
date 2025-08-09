@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -8,7 +10,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../lib/firebaseConfig';
 import { sendBookingConfirmation } from '../../../lib/emailService';
 
-export default function BookingConfirmation() {
+function BookingConfirmationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [bookingDetails, setBookingDetails] = useState(null);
@@ -46,6 +48,7 @@ export default function BookingConfirmation() {
               bookingDate: bookingData.timestamp ? new Date(bookingData.timestamp.seconds * 1000) : new Date()
             });
           } catch (emailError) {
+            window.alert('Booking confirmed, but email could not be sent due to :' + emailError.message + '. Please contact support if you need assistance.');
             // Continue even if email fails - booking is still valid
           }
           }
@@ -222,5 +225,13 @@ export default function BookingConfirmation() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function BookingConfirmation() {
+  return (
+    <Suspense fallback={<div>Loading booking details...</div>}>
+      <BookingConfirmationContent />
+    </Suspense>
   );
 }

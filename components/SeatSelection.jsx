@@ -15,10 +15,11 @@ export default function SeatSelection({ movieId, theaterId, showtimeId, movieTit
   const router = useRouter();
 
   // Sample seat layout
-  const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  const seatsPerRow = 12;
+  const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+  const seatsPerRow = 15;
 
   const [unavailableSeats, setUnavailableSeats] = useState([]);
+  const [loadingSeats, setLoadingSeats] = useState(true);
 
   // Function to handle booking submission
   const handleBooking = async () => {
@@ -83,11 +84,11 @@ export default function SeatSelection({ movieId, theaterId, showtimeId, movieTit
   const getSeatColor = (status) => {
     switch (status) {
       case 'unavailable':
-        return 'bg-gray-700 cursor-not-allowed';
+        return 'bg-red-900 border border-red-800 text-gray-400 cursor-not-allowed opacity-60';
       case 'selected':
-        return 'bg-red-600 text-white';
+        return 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-600/30';
       default:
-        return 'bg-black border border-gray-600 text-white hover:bg-gray-900';
+        return 'bg-gray-900 border border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500';
     }
   };
   
@@ -99,6 +100,7 @@ export default function SeatSelection({ movieId, theaterId, showtimeId, movieTit
   useEffect(() => {
     const fetchBookedSeats = async () => {
       try {
+        setLoadingSeats(true);
         const today = new Date().toISOString().split('T')[0];
         const bookingsRef = collection(db, 'bookings');
         const q = query(
@@ -121,12 +123,16 @@ export default function SeatSelection({ movieId, theaterId, showtimeId, movieTit
         
         setUnavailableSeats(bookedSeats);
         } catch (error) {
-          // Error handling for fetching booked seats
+          console.error('Error fetching booked seats:', error);
           setUnavailableSeats([]);
+        } finally {
+          setLoadingSeats(false);
         }
     };
 
-    fetchBookedSeats();
+    if (movieId && theaterId && showtimeId) {
+      fetchBookedSeats();
+    }
   }, [movieId, theaterId, showtimeId, showtimeDate]);
   
   return (
@@ -142,53 +148,112 @@ export default function SeatSelection({ movieId, theaterId, showtimeId, movieTit
             <p className="text-center text-gray-300 mt-2">SCREEN</p>
           </div>
           
+          {loadingSeats && (
+            <div className="flex items-center justify-center mb-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"></div>
+              <span className="ml-2 text-sm text-gray-300">Loading booked seats...</span>
+            </div>
+          )}
+          
           {/* Seat Legend */}
           <div className="flex flex-wrap justify-center gap-4 md:space-x-8 mb-6 md:mb-8">
             <div className="flex items-center">
-              <div className="w-5 h-5 md:w-6 md:h-6 bg-black border border-gray-600 rounded-t-lg mr-2"></div>
+              <div className="w-5 h-5 md:w-7 md:h-7 bg-gray-900 border border-gray-600 rounded-t-lg mr-2"></div>
               <span className="text-xs md:text-sm text-white">Available</span>
             </div>
             <div className="flex items-center">
-              <div className="w-5 h-5 md:w-6 md:h-6 bg-red-600 border border-red-600 rounded-t-lg mr-2"></div>
+              <div className="w-5 h-5 md:w-7 md:h-7 bg-red-600 border border-red-600 rounded-t-lg mr-2 shadow-lg shadow-red-600/30"></div>
               <span className="text-xs md:text-sm text-white">Selected</span>
             </div>
             <div className="flex items-center">
-              <div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 border border-gray-700 rounded-t-lg mr-2"></div>
-              <span className="text-xs md:text-sm text-white">Unavailable</span>
+              <div className="w-5 h-5 md:w-7 md:h-7 bg-red-900 border border-red-800 rounded-t-lg mr-2 opacity-60"></div>
+              <span className="text-xs md:text-sm text-white">Booked</span>
             </div>
           </div>
           
           {/* Seats */}
           <div className="space-y-1 md:space-y-2 mb-6 md:mb-8 overflow-x-auto">
             <div className="inline-block min-w-full">
-              {rows.map((row) => (
-                <div key={`row-${row}`} className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-                  <div className="w-6 md:w-8 text-center font-medium text-white text-xs md:text-sm flex-shrink-0">
-                    {row}
+              {rows.map((row, index) => (
+                <React.Fragment key={row}>
+                  <div className="flex items-center mb-2">
+                    <div className="w-8 text-white text-center mr-2">{row}</div>
+                    <div className="flex gap-1 md:gap-2">
+                      {/* Group 1: 4 seats */}
+                      {Array.from({ length: 4 }, (_, i) => {
+                        const seatNumber = i + 1;
+                        const seat = `${row}${seatNumber}`;
+                        const status = getSeatStatus(seat);
+
+                        return (
+                          <motion.button
+                            key={seat}
+                            onClick={() => toggleSeat(seat)}
+                            className={`w-4 h-4 md:w-7 md:h-7 border rounded-t-lg flex items-center justify-center text-[7px] md:text-xs ${getSeatColor(status)} flex-shrink-0 transition-all duration-200`}
+                            disabled={status === 'unavailable' || loadingSeats}
+                            whileHover={status !== 'unavailable' && !loadingSeats ? { scale: 1.05 } : {}}
+                            whileTap={status !== 'unavailable' && !loadingSeats ? { scale: 0.95 } : {}}
+                            title={status === 'unavailable' ? `${seat} - Booked` : seat}
+                          >
+                            {seatNumber}
+                          </motion.button>
+                        );
+                      })}
+
+                      {/* Gap 1 */}
+                      <div className="w-4 md:w-8"></div>
+
+                      {/* Group 2: 7 seats */}
+                      {Array.from({ length: 7 }, (_, i) => {
+                        const seatNumber = 4 + i + 1;
+                        const seat = `${row}${seatNumber}`;
+                        const status = getSeatStatus(seat);
+
+                        return (
+                          <motion.button
+                            key={seat}
+                            onClick={() => toggleSeat(seat)}
+                            className={`w-4 h-4 md:w-7 md:h-7 border rounded-t-lg flex items-center justify-center text-[7px] md:text-xs ${getSeatColor(status)} flex-shrink-0 transition-all duration-200`}
+                            disabled={status === 'unavailable' || loadingSeats}
+                            whileHover={status !== 'unavailable' && !loadingSeats ? { scale: 1.05 } : {}}
+                            whileTap={status !== 'unavailable' && !loadingSeats ? { scale: 0.95 } : {}}
+                            title={status === 'unavailable' ? `${seat} - Booked` : seat}
+                          >
+                            {seatNumber}
+                          </motion.button>
+                        );
+                      })}
+
+                      {/* Gap 2 */}
+                      <div className="w-4 md:w-8"></div>
+
+                      {/* Group 3: 4 seats */}
+                      {Array.from({ length: 4 }, (_, i) => {
+                        const seatNumber = 4 + 7 + i + 1;
+                        const seat = `${row}${seatNumber}`;
+                        const status = getSeatStatus(seat);
+
+                        return (
+                          <motion.button
+                            key={seat}
+                            onClick={() => toggleSeat(seat)}
+                            className={`w-4 h-4 md:w-7 md:h-7 border rounded-t-lg flex items-center justify-center text-[7px] md:text-xs ${getSeatColor(status)} flex-shrink-0 transition-all duration-200`}
+                            disabled={status === 'unavailable' || loadingSeats}
+                            whileHover={status !== 'unavailable' && !loadingSeats ? { scale: 1.05 } : {}}
+                            whileTap={status !== 'unavailable' && !loadingSeats ? { scale: 0.95 } : {}}
+                            title={status === 'unavailable' ? `${seat} - Booked` : seat}
+                          >
+                            {seatNumber}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div className="flex gap-1 md:gap-2">
-                    {Array.from({ length: seatsPerRow }, (_, i) => {
-                      const seatNumber = i + 1;
-                      const seat = `${row}${seatNumber}`;
-                      const status = getSeatStatus(seat);
-                      
-                      return (
-                        <motion.button
-                          key={seat}
-                          onClick={() => toggleSeat(seat)}
-                          className={`w-6 h-6 md:w-8 md:h-8 border rounded-t-lg flex items-center justify-center text-[10px] md:text-xs ${getSeatColor(status)} flex-shrink-0`}
-                          disabled={status === 'unavailable'}
-                          whileHover={status !== 'unavailable' ? { scale: 1.05 } : {}}
-                          whileTap={status !== 'unavailable' ? { scale: 0.95 } : {}}
-                          title={seat}
-                        >
-                          {seatNumber}
-                        </motion.button>
-                      );
-                  })}
-                </div>
-              </div>
-            ))}
+                  {(index === 2 || index === 7 || index === 12) && (
+                    <div className="my-4 w-full h-px bg-gray-700"></div>
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 'use client';
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, db } from '../lib/firebaseConfig';
 import {
@@ -9,20 +8,15 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-
 const AuthContext = createContext();
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Check if user exists in Firestore, if not, create a new entry
         const userRef = doc(db, 'users', currentUser.uid);
         const docSnap = await getDoc(userRef);
-
         if (!docSnap.exists()) {
           await setDoc(userRef, {
             uid: currentUser.uid,
@@ -38,10 +32,8 @@ export function AuthProvider({ children }) {
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
-
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {

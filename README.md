@@ -30,8 +30,7 @@ Built with **Next.js**, **React**, **Firebase**, **Tailwind CSS**, and integrate
 
 ## 🗺️ Linked Relation Chart
 
-<details>
-<summary><b>Mermaid Chart Source</b></summary>
+
 
 ```mermaid
 graph TD
@@ -46,7 +45,7 @@ graph TD
   H --> J((Email Service))
   C --> I
 ```
-</details>
+
 
 ---
 
@@ -126,14 +125,6 @@ graph TD
 - **Role:** Renders the booking UI for a chosen movie/theater/showtime.
 - **Features:** 
   - Displays seat map, handles seat selection and booking logic.
-
----
-
-## 🎨 Extra UI & Animation Preview
-
-<p align="center">
-  <img src="https://svgshare.com/i/14iF.svg" width="500" alt="Animated seat selection preview"/>
-</p>
 
 ---
 

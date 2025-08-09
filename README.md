@@ -1,7 +1,4 @@
-<!-- PROJECT BANNER -->
-<p align="center">
-  <img src="https://svgshare.com/i/14fd.svg" alt="CinemaHub Banner" width="80"/>
-</p>
+
 
 <h1 align="center" style="color:#FF4C29;">🍿 <span style="color:#2EC4B6;">CinemaHub</span> — Movie Booking Platform 🎬</h1>
 
@@ -32,10 +29,6 @@ Built with **Next.js**, **React**, **Firebase**, **Tailwind CSS**, and integrate
 ---
 
 ## 🗺️ Linked Relation Chart
-
-<p align="center">
-  <img src="https://svgshare.com/i/14fP.svg" alt="Relation Chart" width="640"/>
-</p>
 
 <details>
 <summary><b>Mermaid Chart Source</b></summary>
